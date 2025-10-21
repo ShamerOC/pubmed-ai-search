@@ -6,6 +6,7 @@ from transformers import AutoTokenizer, AutoModel
 from qdrant_client import QdrantClient
 from typing import List, Optional
 import time
+import os
 from datetime import datetime
 
 # Initialize FastAPI app
@@ -29,10 +30,10 @@ model = None
 tokenizer = None
 qdrant_client = None
 
-# Configuration
-QDRANT_HOST = "localhost"
-QDRANT_PORT = 6333
-COLLECTION_NAME = "pubmed_medcpt"
+# Configuration - read from environment variables
+QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", "6333"))
+COLLECTION_NAME = os.getenv("COLLECTION_NAME", "pubmed_medcpt")
 
 # Request and Response models
 class SearchRequest(BaseModel):
@@ -101,7 +102,9 @@ async def health_check():
         "status": "healthy",
         "model_loaded": model is not None,
         "tokenizer_loaded": tokenizer is not None,
-        "qdrant_connected": qdrant_client is not None
+        "qdrant_connected": qdrant_client is not None,
+        "qdrant_host": QDRANT_HOST,
+        "qdrant_port": QDRANT_PORT
     }
 
 def create_embedding(query: str) -> tuple[list, float]:
