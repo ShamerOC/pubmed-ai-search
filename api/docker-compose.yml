@@ -11,9 +11,6 @@ services:
     environment:
       - QDRANT_HOST=qdrant
       - QDRANT_PORT=6333
-    depends_on:
-      qdrant:
-        condition: service_healthy
     networks:
       - shared-network
     restart: unless-stopped
