@@ -15,9 +15,10 @@ services:
       qdrant:
         condition: service_healthy
     networks:
-      - medcpt-network
+      - shared-network
     restart: unless-stopped
 
 networks:
-  medcpt-network:
-    driver: bridge
+  shared-network:
+    external: true  # Wskazuje, że sieć już istnieje
+    name: medcpt-network
